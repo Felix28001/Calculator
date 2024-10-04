@@ -1,14 +1,13 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.util.ArrayList;
 
 public class Taschenrechner extends JFrame {
     private final JTextField nfAnzeige = new JTextField();
     private final JButton bIstGleich = new JButton();
-    private final JButton bC = new JButton();
-    private final JButton bCE = new JButton();
-    private final JButton bSpace1 = new JButton();
+    private final JButton button_removeLast = new JButton();
+    private final JButton button_clear = new JButton();
+    private final JButton button_clearEntry = new JButton();
     private final JButton b8 = new JButton();
     private final JButton b9 = new JButton();
     private final JButton bDurch = new JButton();
@@ -27,7 +26,6 @@ public class Taschenrechner extends JFrame {
     private final JButton bSpace3 = new JButton();
 
     public Taschenrechner() {
-        // Frame init
         super();
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         int frameWidth = 335;
@@ -41,7 +39,6 @@ public class Taschenrechner extends JFrame {
         setResizable(false);
         Container cp = getContentPane();
         cp.setLayout(null);
-        // Anfang Komponenten
         cp.setBackground(new Color(0x2D2D2D));
 
         nfAnzeige.setBounds(0, 72, 320, 88);
@@ -56,41 +53,41 @@ public class Taschenrechner extends JFrame {
         bIstGleich.setMargin(new Insets(2, 2, 2, 2));
         bIstGleich.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                bIstGleich_ActionPerformed(evt);
+                button_equals_ActionPerformed(evt);
             }
         });
         bIstGleich.setBackground(new Color(0xFF8000));
         bIstGleich.setFont(new Font("Dialog", Font.BOLD, 28));
         cp.add(bIstGleich);
-        bC.setBounds(160, 184, 80, 56);
-        bC.setText("C");
-        bC.setMargin(new Insets(2, 2, 2, 2));
-        bC.addActionListener(new ActionListener() {
+        button_removeLast.setBounds(160, 184, 80, 56);
+        button_removeLast.setText("<-");
+        button_removeLast.setMargin(new Insets(2, 2, 2, 2));
+        button_removeLast.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                bC_ActionPerformed(evt);
+                button_removeLast_ActionPerformed(evt);
             }
         });
-        bC.setFont(new Font("Dialog", Font.BOLD, 28));
-        cp.add(bC);
-        bCE.setBounds(80, 184, 80, 56);
-        bCE.setText("CE");
-        bCE.setMargin(new Insets(2, 2, 2, 2));
-        bCE.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                bCE_ActionPerformed(evt);
+        button_removeLast.setFont(new Font("Dialog", Font.BOLD, 28));
+        cp.add(button_removeLast);
+        button_clear.setBounds(80, 184, 80, 56);
+        button_clear.setText("C");
+        button_clear.setMargin(new Insets(2, 2, 2, 2));
+        button_clear.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {button_clear_ActionPerformed(evt);
             }
         });
-        bCE.setFont(new Font("Dialog", Font.BOLD, 28));
-        cp.add(bCE);
-        bSpace1.setBounds(0, 184, 80, 56);
-        bSpace1.setText("Space");
-        bSpace1.setMargin(new Insets(2, 2, 2, 2));
-        bSpace1.addActionListener(new ActionListener() {
+        button_clear.setFont(new Font("Dialog", Font.BOLD, 28));
+        cp.add(button_clear);
+        button_clearEntry.setFont(new Font("Dialog", Font.BOLD, 28));
+        button_clearEntry.setBounds(0, 184, 80, 56);
+        button_clearEntry.setText("CE");
+        button_clearEntry.setMargin(new Insets(2, 2, 2, 2));
+        button_clearEntry.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                bSpace1_ActionPerformed(evt);
+                button_clearEntry_ActionPerformed(evt);
             }
         });
-        cp.add(bSpace1);
+        cp.add(button_clearEntry);
         b8.setBounds(80, 240, 80, 56);
         b9.setBounds(160, 240, 80, 56);
         bDurch.setBounds(240, 240, 80, 56);
@@ -250,198 +247,115 @@ public class Taschenrechner extends JFrame {
             }
         });
         cp.add(bSpace3);
-
-        // Ende Komponenten
         setVisible(true);
-    } // end of public Taschenrechner
+    }
 
     public static void main(String[] args) {
         new Taschenrechner();
-    } // end of main
-
-    String rechnung = "";
-    ArrayList<String> rechnungen = new ArrayList();
-
-    //
-    //Logik
-    //
-    public double calculate(ArrayList<String> operatoren) {
-        int lenght = operatoren.size();
-        double number3 = 0;
-        for (int i = 0; i < lenght - 2; i+=2) {
-            double number1 = Double.parseDouble(operatoren.get(i));
-            String operator = operatoren.get(i + 1);
-            double number2 = Double.parseDouble(operatoren.get(i + 2));
-            if (i > 0){
-                number1 = number3;
-            }
-            number3 = applyOperator(number1, number2, operator);
-
-            number1 = number2;
-            number2 = number3;
-        }
-
-        return number3;
-    }
-    public double applyOperator(double a, double b, String operator){
-        return switch (operator) {
-            case "+" -> a + b;
-            case "-" -> a - b;
-            case "*" -> a * b;
-            case "/" -> a / b;
-            default -> 0;
-        };
     }
 
-    public static ArrayList<String> structureCalculation(ArrayList<String> operatoren) {
-        ArrayList<String> structured = new ArrayList<String>();
-        String temp = "";
-        for (int i = 0; i < operatoren.size(); i++) {
+    Calculator calculator = new Calculator();
 
-            if (checkIfNumber(operatoren.get(i))) {
-                temp = temp + operatoren.get(i);
-            } else {
-                if (temp != "") {
-                    structured.add(temp);
-                }
-                structured.add(operatoren.get(i));
-                temp = "";
-            }
-            if (i == operatoren.size() - 1) {
-                structured.add(temp);
-            }
-        }
-        return structured;
+    public void button_equals_ActionPerformed(ActionEvent evt) {
+        nfAnzeige.setText(calculator.calculate());
     }
 
-    public static boolean checkIfOperator(String a){
-        if (a == "*" || a == "/" || a == "-" || a == "+") {
-            return true;
-        }
-        return false;
-    }
-    public static boolean checkIfNumber(String a) {
-        if (a == ".") {
-            return true;
-        }
-        try {
-            Integer.parseInt(a);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+    public void button_removeLast_ActionPerformed(ActionEvent evt) {
+        calculator.modulateCalculation("", 1);
+        calculator.showCalculation(nfAnzeige);
     }
 
-    public void modulateCalculation(String operator) {
-        rechnungen.add(operator);
-        showCalculation();
+    public void button_clear_ActionPerformed(ActionEvent evt) {
+        calculator.modulateCalculation("", 2);
+        nfAnzeige.setText(String.join("", calculator.calculations));
     }
 
-    public void modulateCalculation(String operator, int clear) {
-        rechnungen.add(operator);
-        if (clear == 1 && rechnungen.size() > 1) {
-            rechnungen.remove(rechnungen.size() - 1);
-            rechnungen.remove(rechnungen.size() - 1);
-        }
-        if (clear == 2) {
-            rechnungen.clear();
-        }
-        showCalculation();
-    }
-
-    public void showCalculation() {
-        rechnung = String.join("", rechnungen);
-        nfAnzeige.setText(rechnung);
+    public void button_clearEntry_ActionPerformed(ActionEvent evt) {
     }
 
     //
-    // Bedienung
-    //
-    public void bIstGleich_ActionPerformed(ActionEvent evt) {
-        System.out.println(calculate(rechnungen));
-        nfAnzeige.setText(calculate(rechnungen) + "");
-    }
-
-    public void bC_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("", 1);
-    }
-
-    public void bCE_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("", 2);
-    }
-
-    //
-    // Zahlen
+    // numbers
     //
     public void b0_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("0");
+        calculator.modulateCalculation("0");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void b1_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("1");
+        calculator.modulateCalculation("1");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void b2_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("2");
+        calculator.modulateCalculation("2");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void b3_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("3");
+        calculator.modulateCalculation("3");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void b4_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("4");
+        calculator.modulateCalculation("4");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void b5_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("5");
+        calculator.modulateCalculation("5");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void b6_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("6");
+        calculator.modulateCalculation("6");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void b7_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("7");
+        calculator.modulateCalculation("7");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void b8_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("8");
+        calculator.modulateCalculation("8");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void b9_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("9");
+        calculator.modulateCalculation("9");
+        calculator.showCalculation(nfAnzeige);
     }
 
     //
-    // Operatoren
+    // operators
     //
     public void bDurch_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("/");
+        calculator.modulateCalculation("/");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void bMal_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("*");
+        calculator.modulateCalculation("*");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void bMinus_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("-");
+        calculator.modulateCalculation("-");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void bPlus_ActionPerformed(ActionEvent evt) {
-        modulateCalculation("+");
+        calculator.modulateCalculation("+");
+        calculator.showCalculation(nfAnzeige);
     }
 
     public void bKomma_ActionPerformed(ActionEvent evt) {
-        modulateCalculation(".");
+        calculator.modulateCalculation(".");
+        calculator.showCalculation(nfAnzeige);
     }
-
     //
-    // Space
+    // space
     //
-    public void bSpace1_ActionPerformed(ActionEvent evt) {
-    }
-
     public void bSpace3_ActionPerformed(ActionEvent evt) {
     }
 }
