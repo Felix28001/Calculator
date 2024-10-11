@@ -4,7 +4,9 @@ import java.util.ArrayList;
 public class Calculator {
     public ArrayList<String> calculations = new ArrayList<>();
     public JTextField panel;
-
+    public Calculator(JTextField panel) {
+        this.panel = panel;
+    }
     public String calculate() {
         ArrayList<String> operators = structureCalculation(calculations);
         if (operators.size() == 1) {
@@ -44,7 +46,7 @@ public class Calculator {
         }
     }
 
-    public void showCalculation(JTextField panel) {
+    public void showCalculation() {
         panel.setText(String.join("", calculations));
         System.out.println(String.join("", calculations) + " = " + calculate()); //DEBUG
     }
@@ -79,6 +81,22 @@ public class Calculator {
         }
         return structured;
     }
+    public ArrayList<String> structureCalculationPoint() {
+        ArrayList<String> operators = structureCalculation(calculations);
+        ArrayList<String> structured = new ArrayList<>();
+        ArrayList<String> temp = new ArrayList<>();
+        for (int i = 1; i < operators.size(); i +=2) {
+            if (checkifPointOperator(operators.get(i))) {
+                structured.add(Double.toString(applyOperator(
+                        Double.parseDouble(operators.get(i-1)),
+                        Double.parseDouble(operators.get(i+1)),
+                        operators.get(i))));
+            }
+            else {
+            }
+        }
+        return structured;
+    }
 
     private static boolean checkIfNumber(String a) {
         if (a.equals(".")) {
@@ -90,5 +108,8 @@ public class Calculator {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+    private static boolean checkifPointOperator(String a){
+        return a.equals("*") || a.equals("/") || a.equals("/");
     }
 }
