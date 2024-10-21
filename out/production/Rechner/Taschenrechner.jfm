@@ -2,7 +2,7 @@ object FGUIForm: TFGUIForm
   Left = 1523
   Top = 99
   BorderIcons = [biSystemMenu]
-  Caption = 'Taschenrechner'
+  Caption = 'CalculatorGUI'
   ClientHeight = 463
   ClientWidth = 319
   Color = 2960685
@@ -21,7 +21,7 @@ object FGUIForm: TFGUIForm
   Resizable = False
   Undecorated = False
   Background = 2960685
-  Title = 'Taschenrechner'
+  Title = 'CalculatorGUI'
   PixelsPerInch = 96
   TextHeight = 15
   object nfAnzeige: TJTextField
