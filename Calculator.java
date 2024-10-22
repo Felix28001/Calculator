@@ -1,14 +1,23 @@
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Calculator {
-    public ArrayList<String> calculations = new ArrayList<>();
+    public static ArrayList<String> calculations = new ArrayList<>();
     public JTextField panel;
     public Calculator(JTextField panel) {
         this.panel = panel;
     }
+    public boolean calculationOrder = false;
+
     public String calculate() {
-        ArrayList<String> operators = structureCalculation(calculations);
+        ArrayList<String> operators;
+        if (calculationOrder) {
+            operators = structureCalculationPoint(calculations);
+        }else {
+            operators = structureCalculation(calculations);
+        }
+
         if (operators.size() == 1) {
             return operators.getFirst();
         }
@@ -28,7 +37,7 @@ public class Calculator {
         } catch (NumberFormatException e) {
             return "ERROR";
         }
-        return Double.toString(Math.round(number3));
+        return Double.toString(number3);
     }
 
     public void modulateCalculation(String operator) {
@@ -51,7 +60,7 @@ public class Calculator {
         System.out.println(String.join("", calculations) + " = " + calculate()); //DEBUG
     }
 
-    private double applyOperator(double a, double b, String operator) {
+    private static double applyOperator(double a, double b, String operator) {
         return switch (operator) {
             case "+" -> a + b;
             case "-" -> a - b;
@@ -61,7 +70,7 @@ public class Calculator {
         };
     }
 
-    private static ArrayList<String> structureCalculation(ArrayList<String> operators) {
+    private static ArrayList<String> structureCalculation(ArrayList<String> operators) { //structures the calculation Array, ignoring order
         ArrayList<String> structured = new ArrayList<>();
         StringBuilder temp = new StringBuilder();
         for (int i = 0; i < operators.size(); i++) {
@@ -81,18 +90,19 @@ public class Calculator {
         }
         return structured;
     }
-    public ArrayList<String> structureCalculationPoint() {
-        ArrayList<String> operators = structureCalculation(calculations);
+    private static ArrayList<String> structureCalculationPoint(ArrayList<String> operators) { //structures the calculation Array, with order
         ArrayList<String> structured = new ArrayList<>();
-        ArrayList<String> temp = new ArrayList<>();
-        for (int i = 1; i < operators.size(); i +=2) {
-            if (checkifPointOperator(operators.get(i))) {
-                structured.add(Double.toString(applyOperator(
-                        Double.parseDouble(operators.get(i-1)),
-                        Double.parseDouble(operators.get(i+1)),
-                        operators.get(i))));
-            }
-            else {
+        for (int i = 0; i < operators.size(); i++) {
+            String element = operators.get(i);
+
+            if (checkifPointOperator(element)) {
+                double number1 = Double.parseDouble(structured.removeLast());
+                double number2= Double.parseDouble(operators.get(++i));
+
+                double result = applyOperator(number1, number2, element);
+                structured.add(String.valueOf(result));
+            } else {
+                structured.add(element);
             }
         }
         return structured;
@@ -110,6 +120,6 @@ public class Calculator {
         }
     }
     private static boolean checkifPointOperator(String a){
-        return a.equals("*") || a.equals("/") || a.equals("/");
+        return a.equals("*") || a.equals("/");
     }
 }
